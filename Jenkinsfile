@@ -1,25 +1,7 @@
-// pipeline {
-// 	agent none
-//   stages {
-//   	stage('Maven Install') {
-// 		agent any
-//       steps {
-//       	sh 'mvn clean install'
-//       }
-//     }
-//     stage('Docker Build') {
-//     	agent any
-//       steps {
-//       	sh 'docker build -t spring-k8s-example:latest .'
-//       }
-//     }
-//   }
-// }
-
 pipeline {
     agent any 
     environment {
-        Main = 'Main' // Specify your desired branch name here with the correct case
+        main = 'main' // Specify your desired branch name here with the correct case
         jarVersion = '1.0' // Specify your desired jar version here
         tagName = 'latest' // Specify your desired Docker image tag here
     }
@@ -27,11 +9,11 @@ pipeline {
 
         stage('SCM Preparation') {
             steps {
-                echo "BranchName: ${Main}"
+                echo "BranchName: ${main}"
                 echo "Code Update Started"
                 checkout([$class: 'GitSCM',
-                          branches: [[name: "${Main}"]],
-                          userRemoteConfigs: [[url: 'https://github.com/VenkataManeesh/DevOps_Project.git']]])
+                          branches: [[name: "${main}"]],
+                          userRemoteConfigs: [[url: 'https://github.com/VenkataManeesh/docker_demo.git']]])
                 echo "Code Update End"
             }
         }
@@ -39,7 +21,7 @@ pipeline {
         stage('Clean') {
             steps {
                 echo "Clean Started"
-                bat(script: 'mvn clean -f DevOps_Project\\pom.xml', returnStatus: true)
+                bat(script: 'mvn clean -f docker_demo\\pom.xml', returnStatus: true)
                 echo "Clean End"
             }
         }
@@ -47,7 +29,7 @@ pipeline {
         stage('Compile') {
             steps {
                 echo "Code Compilation Started"
-                bat(script: 'mvn compile -f DevOps_Project\\pom.xml', returnStatus: true)
+                bat(script: 'mvn compile -f docker_demo\\pom.xml', returnStatus: true)
                 echo "Code Compilation End"
             }
         }
@@ -55,8 +37,8 @@ pipeline {
         stage('Build Image') {
             steps {
                 echo "Build Image Started"
-                bat(script: 'mvn package -f DevOps_Project\\pom.xml -Dmaven.test.skip=true', returnStatus: true)
-                bat(script: 'docker build --build-arg VER=${jarVersion} -f DevOps_Project\\dockerfile -t Docker_Demo:${tagName} .', returnStatus: true)
+                bat(script: 'mvn package -f docker_demo\\pom.xml -Dmaven.test.skip=true', returnStatus: true)
+                bat(script: 'docker build --build-arg VER=${jarVersion} -f docker_demo\\dockerfile -t Docker_Demo:${tagName} .', returnStatus: true)
                 echo "Build Image End"
             }
         }
