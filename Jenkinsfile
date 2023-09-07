@@ -21,7 +21,7 @@ pipeline {
         stage('Clean') {
             steps {
                 echo "Clean Started"
-                bat(script: 'C:\\apache-maven-3.9.4\\bin\\mvn clean -f docker_demo\\pom.xml', returnStatus: true)
+                bat(script: 'mvn clean', returnStatus: true)
                 echo "Clean End"
             }
         }
@@ -29,7 +29,7 @@ pipeline {
         stage('Compile') {
             steps {
                 echo "Code Compilation Started"
-                bat(script: 'C:\\apache-maven-3.9.4\\bin\\mvn compile -f docker_demo\\pom.xml', returnStatus: true)
+                bat(script: 'mvn compile', returnStatus: true)
                 echo "Code Compilation End"
             }
         }
@@ -37,8 +37,8 @@ pipeline {
         stage('Build Image') {
             steps {
                 echo "Build Image Started"
-                bat(script: "C:\\apache-maven-3.9.4\\bin\\mvn package -f docker_demo\\pom.xml -Dmaven.test.skip=true", returnStatus: true)
-                bat(script: "docker build --build-arg VER=${jarVersion} -f docker_demo\\dockerfile -t docker_demo:${dockerTagName} .", returnStatus: true)
+                bat(script: "mvn package -Dmaven.test.skip=true", returnStatus: true)
+                bat(script: "docker build --build-arg VER=${jarVersion} -f dockerfile -t docker_demo:${dockerTagName} .", returnStatus: true)
                 echo "Build Image End"
             }
         }
