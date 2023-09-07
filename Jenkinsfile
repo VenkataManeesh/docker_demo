@@ -43,9 +43,11 @@ pipeline {
                 echo "Build Image Started"
                 // Use the specified Maven path and adjust the command for the correct POM location
                 bat "${mavenPath} package -Dmaven.test.skip=true"
-                bat "docker build --build-arg VER=${jarVersion} -f dockerfile -t docker_demo:${dockerTagName} ."
+                bat "docker build --build-arg VER=${jarVersion} -f Dockerfile -t docker_demo:${dockerTagName} ."
                 echo "Build Image End"
             }
         }
     }
 }
+
+// bat "docker build --build-arg VER=${jarVersion} -f dockerfile -t docker_demo:${dockerTagName} ."
