@@ -23,8 +23,8 @@ pipeline {
         stage('Clean') {
             steps {
                 echo "Clean Started"
-                // Use the specified Maven path
-                bat "${mavenPath} clean -f docker_demo\\pom.xml"
+                // Use the specified Maven path and adjust the command for the correct POM location
+                bat "${mavenPath} clean"
                 echo "Clean End"
             }
         }
@@ -32,8 +32,8 @@ pipeline {
         stage('Compile') {
             steps {
                 echo "Code Compilation Started"
-                // Use the specified Maven path
-                bat "${mavenPath} compile -f docker_demo\\pom.xml"
+                // Use the specified Maven path and adjust the command for the correct POM location
+                bat "${mavenPath} compile"
                 echo "Code Compilation End"
             }
         }
@@ -41,9 +41,9 @@ pipeline {
         stage('Build Image') {
             steps {
                 echo "Build Image Started"
-                // Use the specified Maven path
-                bat "${mavenPath} package -f docker_demo\\pom.xml -Dmaven.test.skip=true"
-                bat "docker build --build-arg VER=${jarVersion} -f docker_demo\\dockerfile -t docker_demo:${dockerTagName} ."
+                // Use the specified Maven path and adjust the command for the correct POM location
+                bat "${mavenPath} package -Dmaven.test.skip=true"
+                bat "docker build --build-arg VER=${jarVersion} -f dockerfile -t docker_demo:${dockerTagName} ."
                 echo "Build Image End"
             }
         }
