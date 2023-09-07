@@ -38,7 +38,7 @@ pipeline {
             steps {
                 echo "Build Image Started"
                 bat(script: 'mvn package -f docker_demo\\pom.xml -Dmaven.test.skip=true', returnStatus: true)
-                bat(script: 'docker build --build-arg VER=${jarVersion} -f docker_demo\\dockerfile -t Docker_Demo:${tagName} .', returnStatus: true)
+                bat(script: 'docker build --build-arg VER=${jarVersion} -f docker_demo\\dockerfile -t docker_demo:${tagName} .', returnStatus: true)
                 echo "Build Image End"
             }
         }
