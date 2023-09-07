@@ -4,6 +4,7 @@ pipeline {
         main = 'main' // Specify your desired branch name here with the correct case
         jarVersion = '1.0' // Specify your desired jar version here
         tagName = 'latest' // Specify your desired Docker image tag here
+        dockerTagName = tagName.toLowerCase() // Convert tagName to lowercase for Docker tag
     }
     stages {
         stage('SCM Preparation') {
@@ -36,17 +37,8 @@ pipeline {
         stage('Build Image') {
             steps {
                 echo "Build Image Started"
-                script {
-                    // Set Docker image tag to lowercase
-                    def lowercaseTagName = tagName.toLowerCase()
-                    // Set the Docker image tag
-                    env.TAG_NAME = lowercaseTagName
-                }
-                script {
-                    // Inside this script block, you can use the TAG_NAME environment variable
-                    bat(script: 'mvn package -f docker_demo\\pom.xml -Dmaven.test.skip=true', returnStatus: true)
-                    bat(script: 'docker build --build-arg VER=${jarVersion} -f docker_demo\\dockerfile -t docker_demo:${TAG_NAME} .', returnStatus: true)
-                }
+                bat(script: "mvn package -f docker_demo\\pom.xml -Dmaven.test.skip=true", returnStatus: true)
+                bat(script: "docker build --build-arg VER=${jarVersion} -f docker_demo\\dockerfile -t docker_demo:${dockerTagName} .", returnStatus: true)
                 echo "Build Image End"
             }
         }
