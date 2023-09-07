@@ -5,6 +5,7 @@ pipeline {
         jarVersion = '1.0' // Specify your desired jar version here
         tagName = 'latest' // Specify your desired Docker image tag here
         dockerTagName = tagName.toLowerCase() // Convert tagName to lowercase for Docker tag
+        mavenHome = 'C:\\apache-maven-3.9.4\\bin\\' // Specify your Maven home directory
     }
     stages {
         stage('SCM Preparation') {
@@ -21,7 +22,7 @@ pipeline {
         stage('Clean') {
             steps {
                 echo "Clean Started"
-                bat(script: 'mvn clean -f docker_demo\\pom.xml', returnStatus: true)
+                bat(script: "${mavenHome}mvn clean -f docker_demo\\pom.xml", returnStatus: true)
                 echo "Clean End"
             }
         }
@@ -29,7 +30,7 @@ pipeline {
         stage('Compile') {
             steps {
                 echo "Code Compilation Started"
-                bat(script: 'mvn compile -f docker_demo\\pom.xml', returnStatus: true)
+                bat(script: "${mavenHome}mvn compile -f docker_demo\\pom.xml", returnStatus: true)
                 echo "Code Compilation End"
             }
         }
@@ -37,7 +38,7 @@ pipeline {
         stage('Build Image') {
             steps {
                 echo "Build Image Started"
-                bat(script: "mvn package -f docker_demo\\pom.xml -Dmaven.test.skip=true", returnStatus: true)
+                bat(script: "${mavenHome}mvn package -f docker_demo\\pom.xml -Dmaven.test.skip=true", returnStatus: true)
                 bat(script: "docker build --build-arg VER=${jarVersion} -f docker_demo\\dockerfile -t docker_demo:${dockerTagName} .", returnStatus: true)
                 echo "Build Image End"
             }
